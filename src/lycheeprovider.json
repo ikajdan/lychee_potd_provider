@@ -1,0 +1,9 @@
+{
+    "KPlugin": {
+        "Name": "Lychee",
+        "ServiceTypes": [
+            "PlasmaPoTD/Plugin"
+        ]
+    },
+    "X-KDE-PlasmaPoTDProvider-Identifier": "lychee"
+}
