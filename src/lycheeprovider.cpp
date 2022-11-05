@@ -8,11 +8,12 @@
 #include <KIO/Job>
 #include <KPluginFactory>
 
+#include <random>
+
 #include <QByteArray>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <random>
 
 LycheeProvider::LycheeProvider(QObject *parent, const QVariantList &args)
     : PotdProvider(parent, args)
@@ -100,13 +101,11 @@ void LycheeProvider::handleFinishedAlbumRequest(KJob *job)
         }
     }
 
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> uni(0, m_imagesUrl.size());
+    // Plasma 5.24.0 release date
+    std::mt19937 randomEngine(QDate(2022, 2, 3).daysTo(QDate::currentDate()));
+    std::uniform_int_distribution<int> distrib(0, m_imagesUrl.size() - 1);
 
-    auto index = uni(rng);
-
-    const QUrl pictureUrl(m_serverUrl + QStringLiteral("/") + m_imagesUrl.at(index));
+    const QUrl pictureUrl(m_serverUrl + QStringLiteral("/") + m_imagesUrl.at(distrib(randomEngine)));
 
     KIO::StoredTransferJob *imageRequestJob = KIO::storedGet(pictureUrl, KIO::NoReload, KIO::HideProgressInfo);
     connect(imageRequestJob, &KIO::StoredTransferJob::finished, this, &LycheeProvider::handleFinishedImageRequest);
